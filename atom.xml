@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>小皮</title>
   
-  
+  <subtitle>今天也要开心呢！(*^▽^*)</subtitle>
   <link href="http://xiaopi826.github.io/atom.xml" rel="self"/>
   
   <link href="http://xiaopi826.github.io/"/>
