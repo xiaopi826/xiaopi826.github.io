@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>小皮</title>
   
-  <subtitle>今天也要开心呢！(*^▽^*)</subtitle>
+  <subtitle>今天也要开心呢(*^▽^*)</subtitle>
   <link href="http://xiaopi826.github.io/atom.xml" rel="self"/>
   
   <link href="http://xiaopi826.github.io/"/>
@@ -10,7 +10,7 @@
   <id>http://xiaopi826.github.io/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>小皮</name>
     
   </author>
   
