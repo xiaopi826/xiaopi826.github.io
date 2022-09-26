@@ -6,7 +6,7 @@
   <link href="http://xiaopi826.github.io/atom.xml" rel="self"/>
   
   <link href="http://xiaopi826.github.io/"/>
-  <updated>2022-09-26T06:14:11.041Z</updated>
+  <updated>2022-09-26T06:25:43.392Z</updated>
   <id>http://xiaopi826.github.io/</id>
   
   <author>
@@ -21,15 +21,15 @@
     <link href="http://xiaopi826.github.io/2022/09/25/msf-de-shi-yong/"/>
     <id>http://xiaopi826.github.io/2022/09/25/msf-de-shi-yong/</id>
     <published>2022-09-25T11:24:01.000Z</published>
-    <updated>2022-09-26T06:14:11.041Z</updated>
+    <updated>2022-09-26T06:25:43.392Z</updated>
     
     
     
     
-    <category term="metasploite" scheme="http://xiaopi826.github.io/categories/metasploite/"/>
+    <category term="test111" scheme="http://xiaopi826.github.io/categories/test111/"/>
     
     
-    <category term="MSF" scheme="http://xiaopi826.github.io/tags/MSF/"/>
+    <category term="test1" scheme="http://xiaopi826.github.io/tags/test1/"/>
     
   </entry>
   
