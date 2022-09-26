@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>test</title>
+      <link href="/2022/09/25/msf-de-shi-yong/"/>
+      <url>/2022/09/25/msf-de-shi-yong/</url>
+      
+        <content type="html"><![CDATA[<h1 id="msf的使用"><a href="#msf的使用" class="headerlink" title="msf的使用"></a>msf的使用</h1><p>test</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> metasploite </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MSF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="/2022/09/24/hello-world/"/>
       <url>/2022/09/24/hello-world/</url>

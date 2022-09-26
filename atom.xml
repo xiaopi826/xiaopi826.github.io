@@ -6,7 +6,7 @@
   <link href="http://xiaopi826.github.io/atom.xml" rel="self"/>
   
   <link href="http://xiaopi826.github.io/"/>
-  <updated>2022-09-24T04:47:26.709Z</updated>
+  <updated>2022-09-26T01:02:00.957Z</updated>
   <id>http://xiaopi826.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>test</title>
+    <link href="http://xiaopi826.github.io/2022/09/25/msf-de-shi-yong/"/>
+    <id>http://xiaopi826.github.io/2022/09/25/msf-de-shi-yong/</id>
+    <published>2022-09-25T11:24:01.000Z</published>
+    <updated>2022-09-26T01:02:00.957Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="msf的使用"><a href="#msf的使用" class="headerlink" title="msf的使用"></a>msf的使用</h1><p>test</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;msf的使用&quot;&gt;&lt;a href=&quot;#msf的使用&quot; class=&quot;headerlink&quot; title=&quot;msf的使用&quot;&gt;&lt;/a&gt;msf的使用&lt;/h1&gt;&lt;p&gt;test&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="metasploite" scheme="http://xiaopi826.github.io/categories/metasploite/"/>
+    
+    
+    <category term="MSF" scheme="http://xiaopi826.github.io/tags/MSF/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
