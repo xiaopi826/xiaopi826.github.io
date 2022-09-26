@@ -3,6 +3,7 @@
 title: tags
 date: 2022-09-25 21:10:40
 type: "tags"
+permalink: /tags
 layout: "tags"
 ​---
 
