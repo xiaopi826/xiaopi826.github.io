@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="test, 小皮">
+    <meta name="keywords" content="PE文件结构, 小皮">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>test | 小皮</title>
+    <title>PE文件结构 | 小皮</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -487,12 +487,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">test</h1>
+                    <h1 class="description center-align post-title">PE文件结构</h1>
                 </div>
             </div>
         </div>
@@ -610,8 +610,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/test1/">
-                                <span class="chip bg-color">test1</span>
+                            <a href="/tags/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/">
+                                <span class="chip bg-color">PE文件结构</span>
                             </a>
                         
                     </div>
@@ -622,8 +622,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/test111/" class="post-category">
-                                test111
+                            <a href="/categories/Windows/" class="post-category">
+                                Windows
                             </a>
                         
                     </div>
@@ -635,28 +635,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-09-25
+                    2023-08-21
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-09-26
+                    2023-08-22
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    1.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    5 分
                 </div>
                 
 
@@ -679,7 +679,146 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="0x00-基础知识"><a href="#0x00-基础知识" class="headerlink" title="0x00 基础知识"></a>0x00 基础知识</h2><h3 id="什么是PE文件"><a href="#什么是PE文件" class="headerlink" title="什么是PE文件"></a>什么是PE文件</h3><p>就是可执行文件结构，PE（Portable Executable）是<code>Windows</code>下的可执行结构。包含exe/sys/dll都是PE文件结构的文件类型</p>
+<h3 id="PE文件里面的东西可以用来做什么"><a href="#PE文件里面的东西可以用来做什么" class="headerlink" title="PE文件里面的东西可以用来做什么"></a>PE文件里面的东西可以用来做什么</h3><p>Hook</p>
+<p>反调试</p>
+<p>壳</p>
+<p>病毒</p>
+<p>破解</p>
+<h3 id="地址的概念"><a href="#地址的概念" class="headerlink" title="地址的概念"></a>地址的概念</h3><p><strong>虚拟内存地址（VA）</strong></p>
+<p>PE虚拟内存地址指 <code>进程本身的基地址(模块加载地址)+相对虚拟内存地址RVA</code></p>
+<p><strong>相对虚拟内存地址（RVA）</strong></p>
+<p><code>目标地址距离模块加载基址的距离</code>就是RVA</p>
+<p><strong>文件偏移地址（FOA）</strong></p>
+<p>当前的地址距离文件的首地址</p>
+<p><strong>特殊地址</strong></p>
+<p><strong>内存对齐</strong></p>
+<p>代码段（可执行的指令）ER </p>
+<p>数据段（可读写的数据）RW </p>
+<p>1个页作为设置属性的基本单位 页在 <code>x86</code>下最小是 <code>4K(0x1000)</code> <code>x64</code> 是<code>8K(0x2000)</code></p>
+<p><strong>文件对齐</strong></p>
+<p>物理磁盘扇区的大小，512字节(0x200)</p>
+<p><code>操作系统是允许内存和文件中对齐不一样的，加载程序时，PE文件会被拉伸</code></p>
+<h2 id="0x01-PE文件基本结构"><a href="#0x01-PE文件基本结构" class="headerlink" title="0x01 PE文件基本结构"></a>0x01 PE文件基本结构</h2><p>DOS头</p>
+<p>DOS体</p>
+<p>NT头魔数</p>
+<p>标准NT/PE头</p>
+<p>扩展NT/PE头（可选头）</p>
+<h3 id="DOS头"><a href="#DOS头" class="headerlink" title="DOS头"></a>DOS头</h3><p>IMAGE_DOS_HEADER</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
+    WORD   e_magic;                     // 魔数 EXE标志（MZ）
+    WORD   e_cblp;                      // 最后页的字节数
+    WORD   e_cp;                        // 文件页数
+    WORD   e_crlc;                      // 重定位表中的指针数量
+    WORD   e_cparhdr;                   // 头部段落标题大小
+    WORD   e_minalloc;                  // 最小附加段大小
+    WORD   e_maxalloc;                  // 最大附加段大小
+    WORD   e_ss;                        // 初始的SS值
+    WORD   e_sp;                        // 初始的SP值
+    WORD   e_csum;                      // 补码校验值
+    WORD   e_ip;                        // 初始IP值
+    WORD   e_cs;                        // 初始CS值
+    WORD   e_lfarlc;                    // 重定位表的字节偏移量
+    WORD   e_ovno;                      // 覆盖号
+    WORD   e_res[4];                    // 保留
+    WORD   e_oemid;                     // OEM标识符
+    WORD   e_oeminfo;                   // OEM信息
+    WORD   e_res2[10];                  // 保留
+    LONG   e_lfanew;                    // PE头相对于文件的偏移位置
+  } IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>重点字段</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">WORD   e_magic;                     // 魔数 EXE标志（MZ）
+LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>通过<code>e_magic</code>判断是否是一个标准的PE文件</p>
+<p>通过<code>e_lfanew</code>才能找到PE头在哪</p>
+<p>DOS_STUB大小不固定</p>
+<p>在DOS系统中，DOS头+DOS体实际是一个完整的程序：</p>
+<p>在32位或64位中，会在DOS下进行输出一句话：This program cannot be run in DOS mode</p>
+<p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_18-38-20.png" alt="Snipaste_2023-08-21_18-38-20"></p>
+<p>如果PE文件在DOS下进行运行，16位后面的<code>32位</code>或<code>64位</code>部分会是一个冗余的状态，直接抛弃掉，不会被执行并输出一句话</p>
+<p>如果PE文件在<code>32位</code>或<code>64位</code>下进行运行，DOS部分会被当成冗余抛弃掉，输出一句话：This program cannot be run in DOS mode</p>
+<p><code>e_lfanew</code>指向问题</p>
+<p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_18-51-32.png" alt="Snipaste_2023-08-21_18-51-32"></p>
+<p>e_lfanew = 10010000</p>
+<p>是小端序，也就是00000110，PE头的位置为<code>00000110h</code></p>
+<p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_19-03-17.png" alt="Snipaste_2023-08-21_19-03-17"></p>
+<p>而PE头部分</p>
+<p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_19-07-29.png" alt="Snipaste_2023-08-21_19-07-29"></p>
+<p><code>50450000</code>也就是<code>00004550h</code>，是一个PE头的标志，它是一个DWORD，所以<code>PE..才是标志</code></p>
+<p><code>e_lfanew</code>是PE头相对于文件的偏移，所以PE头的实际位置是<code>PE头 = DOS Base/File Base + Dos.e_lfanew</code></p>
+<h3 id="NT头"><a href="#NT头" class="headerlink" title="NT头"></a>NT头</h3><p>IMAGE_NT_HEADERS结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_NT_HEADERS {
+    DWORD Signature;                            //NT头标志 'PE.'50450000 
+    IMAGE_FILE_HEADER FileHeader;               //标准PE头
+    IMAGE_OPTIONAL_HEADER32 OptionalHeader;     //扩展PE头
+} IMAGE_NT_HEADERS32, *PIMAGE_NT_HEADERS32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="标准PE头"><a href="#标准PE头" class="headerlink" title="标准PE头"></a>标准PE头</h4><p>IMAGE_FILE_HEADER结构</p>
+<p>正常情况下<code>32位的PE叫PE32</code>，<code>64位叫PE32+</code></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_FILE_HEADER {
+    WORD    Machine;                            //魔数 x86:值为0x14c x64:值为0x8864
+    WORD    NumberOfSections;                   //PE中区段的数量
+    DWORD   TimeDateStamp;                      //文件创建的日期和时间
+    DWORD   PointerToSymbolTable;               //执行符号表(用来调试的)
+    DWORD   NumberOfSymbols;                    //符号表中的符号数量
+    WORD    SizeOfOptionalHeader;               //拓展头的长度 x86:224 x64:240
+    WORD    Characteristics;                    //文件属性 x86:3 x64:22
+} IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="扩展PE头"><a href="#扩展PE头" class="headerlink" title="扩展PE头"></a>扩展PE头</h4><p>IMAGE_OPTIONAL_HEADER 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_OPTIONAL_HEADER {
+    //
+    // Standard fields.
+    //
+
+    WORD    Magic;                              //魔数 x86:0x10b x64:0x20b
+    BYTE    MajorLinkerVersion;                 //链接器的主版本
+    BYTE    MinorLinkerVersion;                 //链接器的次版本
+    DWORD   SizeOfCode;                         //所有包含代码的区段的大小总和
+    DWORD   SizeOfInitializedData;              //所有包含已经初始化数据的区段大小总和
+    DWORD   SizeOfUninitializedData;            //所有包含未初始化数据的区段大小总和
+    DWORD   AddressOfEntryPoint;                //程序执行入口
+    DWORD   BaseOfCode;                         //代码段的起始RVA
+    DWORD   BaseOfData;                         //数据段的起始RVA(32+的PE中删除了)
+
+    //
+    // NT additional fields.
+    //
+
+    DWORD   ImageBase;                          //程序建议的加载地址(基地址) 在x64下类型变成ULONGLONG
+    DWORD   SectionAlignment;                   //内存中的对齐粒度 x86 0x1000 x64 0x2000
+    DWORD   FileAlignment;                      //文件中的对齐粒度 0x200
+    WORD    MajorOperatingSystemVersion;        //操作系统主版本号
+    WORD    MinorOperatingSystemVersion;
+    WORD    MajorImageVersion;                  //PE的镜像版本
+    WORD    MinorImageVersion;
+    WORD    MajorSubsystemVersion;              //子系统的主版本号
+    WORD    MinorSubsystemVersion;
+    DWORD   Win32VersionValue;                  //Win32版本(至今未使用)
+    DWORD   SizeOfImage;                        //内存中整个PE镜像的尺寸
+    DWORD   SizeOfHeaders;                      //DOS头+NT头+区段的大小
+    DWORD   CheckSum;                           //校验和
+    WORD    Subsystem;                          //子系统
+    WORD    DllCharacteristics;                 //DLL动态链接库特性
+    DWORD   SizeOfStackReserve;                 //初始化时的栈大小
+    DWORD   SizeOfStackCommit;                  //初始化时实际上提交的栈大小
+    DWORD   SizeOfHeapReserve;                  //初始化时保留的堆大小
+    DWORD   SizeOfHeapCommit;                   //初始化时实际上提交的堆带线
+    DWORD   LoaderFlags;                        //加载标记
+    DWORD   NumberOfRvaAndSizes;                //数据目录结构的数量
+    IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES]; //数据目录表数据
+} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>ImageBase</code>程序建议的加载地址(基地址)，后期的版本中，为了缓解漏洞，加上了一个随机基址的功能，随机基址会把高位进行随机加载，包括主模块exe和其他模块的DLL，它们的加载基址高位堆都是随机的。随机基址加载的地址算出来再加上偏移才能得到现在的函数在哪</p>
+<h4 id="数据目录表"><a href="#数据目录表" class="headerlink" title="数据目录表"></a>数据目录表</h4><p>IMAGE_DATA_DIRECTORY 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_DATA_DIRECTORY {
+    DWORD   VirtualAddress;                     //数据的起始RVA
+    DWORD   Size;                               //数据块的长度
+} IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
                 
             </div>
             <hr/>
@@ -705,7 +844,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaopi826.github.io/2022/09/25/test/">http://xiaopi826.github.io/2022/09/25/test/</a>
+                    <a href="http://xiaopi826.github.io/2023/08/21/pe-wen-jian-jie-gou/">http://xiaopi826.github.io/2023/08/21/pe-wen-jian-jie-gou/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -743,8 +882,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/test1/">
-                                    <span class="chip bg-color">test1</span>
+                                <a href="/tags/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/">
+                                    <span class="chip bg-color">PE文件结构</span>
                                 </a>
                             
                         </div>
@@ -914,17 +1053,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/05/18/ntlm-yu-kerberos-xie-yi/">
+                <a href="/2023/08/21/pe-wen-jian-jie-gou/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="NTLM与Kerberos协议">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="PE文件结构">
                         
-                        <span class="card-title">NTLM与Kerberos协议</span>
+                        <span class="card-title">PE文件结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -934,26 +1074,27 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-05-18
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-21
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%86%85%E7%BD%91/" class="post-category">
-                                    内网
+                            <a href="/categories/Windows/" class="post-category">
+                                    Windows
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Windows%E5%8D%8F%E8%AE%AE/">
-                        <span class="chip bg-color">Windows协议</span>
+                    <a href="/tags/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">PE文件结构</span>
                     </a>
                     
                 </div>
@@ -967,32 +1108,48 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/09/24/hello-world/">
+                <a href="/2023/05/20/shiro-550-fan-xu-lie-hua-lou-dong-cve-2016-4437/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="Shiro-550反序列化漏洞（CVE-2016-4437）">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">Shiro-550反序列化漏洞（CVE-2016-4437）</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            <!--more-->
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-05-20
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            小皮
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" class="post-category">
+                                    漏洞复现
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Shiro/">
+                        <span class="chip bg-color">Shiro</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%A1%86%E6%9E%B6/">
+                        <span class="chip bg-color">框架</span>
+                    </a>
+                    
                 </div>
                 
             </div>
