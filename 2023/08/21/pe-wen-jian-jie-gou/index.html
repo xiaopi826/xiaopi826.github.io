@@ -748,6 +748,7 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
 <p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_19-07-29.png" alt="Snipaste_2023-08-21_19-07-29"></p>
 <p><code>50450000</code>也就是<code>00004550h</code>，是一个PE头的标志，它是一个DWORD，所以<code>PE..才是标志</code></p>
 <p><code>e_lfanew</code>是PE头相对于文件的偏移，所以PE头的实际位置是<code>PE头 = DOS Base/File Base + Dos.e_lfanew</code></p>
+<p><code>PE文件被加载到内存时的地址就是PE文件的起始地址</code></p>
 <h3 id="NT头"><a href="#NT头" class="headerlink" title="NT头"></a>NT头</h3><p>IMAGE_NT_HEADERS结构</p>
 <pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_NT_HEADERS {
     DWORD Signature;                            //NT头标志 'PE.'50450000 
