@@ -642,21 +642,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2023-08-22
+                    2023-08-24
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.3k
+                    1.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -690,7 +690,7 @@
 <p><strong>相对虚拟内存地址（RVA）</strong></p>
 <p><code>目标地址距离模块加载基址的距离</code>就是RVA</p>
 <p><strong>文件偏移地址（FOA）</strong></p>
-<p>当前的地址距离文件的首地址</p>
+<p>当前的地址距离文件的起始地址的偏移量</p>
 <p><strong>特殊地址</strong></p>
 <p><strong>内存对齐</strong></p>
 <p>代码段（可执行的指令）ER </p>
@@ -699,9 +699,10 @@
 <p><strong>文件对齐</strong></p>
 <p>物理磁盘扇区的大小，512字节(0x200)</p>
 <p><code>操作系统是允许内存和文件中对齐不一样的，加载程序时，PE文件会被拉伸</code></p>
-<h2 id="0x01-PE文件基本结构"><a href="#0x01-PE文件基本结构" class="headerlink" title="0x01 PE文件基本结构"></a>0x01 PE文件基本结构</h2><p>DOS头</p>
+<h2 id="0x01-PE文件结构"><a href="#0x01-PE文件结构" class="headerlink" title="0x01 PE文件结构"></a>0x01 PE文件结构</h2><p>DOS头</p>
 <p>DOS体</p>
-<p>NT头魔数</p>
+<p>NT头</p>
+<p>魔数</p>
 <p>标准NT/PE头</p>
 <p>扩展NT/PE头（可选头）</p>
 <h3 id="DOS头"><a href="#DOS头" class="headerlink" title="DOS头"></a>DOS头</h3><p>IMAGE_DOS_HEADER</p>
@@ -748,7 +749,7 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
 <p><img src="/../images/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/Snipaste_2023-08-21_19-07-29.png" alt="Snipaste_2023-08-21_19-07-29"></p>
 <p><code>50450000</code>也就是<code>00004550h</code>，是一个PE头的标志，它是一个DWORD，所以<code>PE..才是标志</code></p>
 <p><code>e_lfanew</code>是PE头相对于文件的偏移，所以PE头的实际位置是<code>PE头 = DOS Base/File Base + Dos.e_lfanew</code></p>
-<p><code>PE文件被加载到内存时的地址就是PE文件的起始地址</code></p>
+<p><code>PE文件被加载到内存时的地址就是PE文件的起始地址(DOS Base/File Base)</code></p>
 <h3 id="NT头"><a href="#NT头" class="headerlink" title="NT头"></a>NT头</h3><p>IMAGE_NT_HEADERS结构</p>
 <pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_NT_HEADERS {
     DWORD Signature;                            //NT头标志 'PE.'50450000 
@@ -818,6 +819,53 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
     DWORD   VirtualAddress;                     //数据的起始RVA
     DWORD   Size;                               //数据块的长度
 } IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="导入表"><a href="#导入表" class="headerlink" title="导入表"></a>导入表</h5><p>PIMAGE_IMPORT_DESCRIPTOR 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+    union {
+        DWORD   Characteristics;
+        DWORD   OriginalFirstThunk;       //指向IAT (PIMAGE_THUNK_DATA)结构的指针
+    } DUMMYUNIONNAME;
+    DWORD   TimeDateStamp;                //时间戳，一般为0
+    DWORD   ForwarderChain;               //指向链表的结构
+    DWORD   Name;                         //当前导入表的名称，
+    DWORD   FirstThunk;                   //与OriginalFirstThunk一样，OriginalFirstThunk不生效时它才生效
+} IMAGE_IMPORT_DESCRIPTOR;
+typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Name 是一个 DWORD 类型的原因</strong></p>
+<p>因为Name是一个RVA，把它转为FOA，在FOA里找到一个以00结尾的ASCII字符串。</p>
+<h6 id="导入地址表（Import-address-table）"><a href="#导入地址表（Import-address-table）" class="headerlink" title="导入地址表（Import address table）"></a>导入地址表（Import address table）</h6><p>IMAGE_THUNK_DATA32 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_THUNK_DATA32 {
+    union {
+        DWORD ForwarderString;      //转发
+        DWORD Function;             //函数地址
+        DWORD Ordinal;              //序号
+        DWORD AddressOfData;        //RVA 指向 PIMAGE_IMPORT_BY_NAME 结构
+    } u1;
+} IMAGE_THUNK_DATA32;
+typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h6 id="导入函数信息"><a href="#导入函数信息" class="headerlink" title="导入函数信息"></a>导入函数信息</h6><p>IMAGE_IMPORT_BY_NAME 结构</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct _IMAGE_IMPORT_BY_NAME {
+    WORD    Hint;                   //
+    CHAR   Name[1];
+} IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="导出表"><a href="#导出表" class="headerlink" title="导出表"></a>导出表</h5><p>IMAGE_EXPORT_DIRECTORY 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_EXPORT_DIRECTORY {
+    DWORD   Characteristics;         //标志 未使用
+    DWORD   TimeDateStamp;           //时间戳
+    WORD    MajorVersion;            //未使用
+    WORD    MinorVersion;            //未使用
+    DWORD   Name;                    //该导出表文件的文件名字符串
+    DWORD   Base;                    //该导出表导出序号的起始序号
+    DWORD   NumberOfFunctions;       //导出函数的总数
+    DWORD   NumberOfNames;           //具有函数名的导出函数总数
+    DWORD   AddressOfFunctions;      //导出函数的地址表的RVA
+    DWORD   AddressOfNames;          //导出函数的名称表的RVA
+    DWORD   AddressOfNameOrdinals;   //导出函数的序号表的RVA
+} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 
@@ -1351,7 +1399,7 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">4.3k</span>&nbsp;字
+                class="white-color">4.6k</span>&nbsp;字
             
             
             
