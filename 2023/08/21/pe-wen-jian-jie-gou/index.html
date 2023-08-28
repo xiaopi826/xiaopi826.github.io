@@ -642,21 +642,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2023-08-26
+                    2023-08-27
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.1k
+                    2.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    9 分
                 </div>
                 
 
@@ -956,7 +956,55 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
     DWORD   Reserved;                    //保留
 } IMAGE_RESOURCE_DATA_ENTRY, *PIMAGE_RESOURCE_DATA_ENTRY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h3>
+<h3 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h3><p>PIMAGE_BASE_RELOCATION 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_BASE_RELOCATION {
+    DWORD   VirtualAddress;              //RVA
+    DWORD   SizeOfBlock;                 //重定位块的大小
+//  WORD    TypeOffset[1];               //16位，前4位是type，后12位是offset偏移
+} IMAGE_BASE_RELOCATION;
+typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="TLS表"><a href="#TLS表" class="headerlink" title="TLS表"></a>TLS表</h3><p>IMAGE_DIRECTORY_ENTRY_TLS 宏</p>
+<p>PIMAGE_TLS_DIRECTORY 结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_TLS_DIRECTORY32 {
+    DWORD   StartAddressOfRawData;      //数据块开始
+    DWORD   EndAddressOfRawData;        //数据块结束
+    DWORD   AddressOfIndex;             //索引变量
+    DWORD   AddressOfCallBacks;         //回调表 指向PIMAGE_TLS_CALLBACK *
+    DWORD   SizeOfZeroFill;             //填零大小
+    union {
+        DWORD Characteristics;          //特征值
+        struct {
+            DWORD Reserved0 : 20;
+            DWORD Alignment : 4;
+            DWORD Reserved1 : 8;
+        } DUMMYSTRUCTNAME;
+    } DUMMYUNIONNAME;
+
+} IMAGE_TLS_DIRECTORY32;
+typedef IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="延迟导入表"><a href="#延迟导入表" class="headerlink" title="延迟导入表"></a>延迟导入表</h3><p>IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT 宏</p>
+<p>_IMAGE_DELAYLOAD_DESCRIPTOR结构</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_DELAYLOAD_DESCRIPTOR {
+    union {
+        DWORD AllAttributes;
+        struct {
+            DWORD RvaBased : 1;             // Delay load version 2
+            DWORD ReservedAttributes : 31;
+        } DUMMYSTRUCTNAME;
+    } Attributes;
+
+    DWORD DllNameRVA;                       //动态链接库名字的RVA
+    DWORD ModuleHandleRVA;                  //模块基址的RVA
+    DWORD ImportAddressTableRVA;            //导入地址表的RVA
+    DWORD ImportNameTableRVA;               //导入名称表的RVA
+    DWORD BoundImportAddressTableRVA;       // RVA to an optional bound IAT
+    DWORD UnloadInformationTableRVA;        //延迟导入函数卸载表的RVA
+    DWORD TimeDateStamp;
+} IMAGE_DELAYLOAD_DESCRIPTOR, *PIMAGE_DELAYLOAD_DESCRIPTOR;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
                 
             </div>
             <hr/>
@@ -1488,7 +1536,7 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">5.1k</span>&nbsp;字
+                class="white-color">5.3k</span>&nbsp;字
             
             
             
