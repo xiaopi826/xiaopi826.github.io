@@ -3,7 +3,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta name="keywords" content="PE文件结构, 小皮">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,14 +31,14 @@
 
 <meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="小皮" type="application/atom+xml">
-</head>
+<link rel="alternate" href="/atom.xml" title="小皮" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 
 
 <body>
-    <header class="navbar-fixed">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
     <nav id="headNav" class="bg-color nav-transparent">
         <div id="navContainer" class="nav-wrapper container">
             <div class="brand-logo">
@@ -671,9 +671,6 @@
         <hr class="clearfix">
 
         
-        <!-- 是否加载使用自带的 prismjs. -->
-        <link rel="stylesheet" href="/libs/prism/prism.css">
-        
 
         
 
@@ -707,7 +704,7 @@
 <p>标准NT/PE头</p>
 <p>扩展NT/PE头（可选头）</p>
 <h2 id="0x01-文件头"><a href="#0x01-文件头" class="headerlink" title="0x01 文件头"></a>0x01 文件头</h2><h3 id="DOS头"><a href="#DOS头" class="headerlink" title="DOS头"></a>DOS头</h3><p>IMAGE_DOS_HEADER</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
+<pre class=" language-c++"><code class="language-c++">typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
     WORD   e_magic;                     // 魔数 EXE标志（MZ）
     WORD   e_cblp;                      // 最后页的字节数
     WORD   e_cp;                        // 文件页数
@@ -727,12 +724,12 @@
     WORD   e_oeminfo;                   // OEM信息
     WORD   e_res2[10];                  // 保留
     LONG   e_lfanew;                    // PE头相对于文件的偏移位置
-  } IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+  } IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
+</code></pre>
 <p>重点字段</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">WORD   e_magic;                     // 魔数 EXE标志（MZ）
-LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
+<pre class=" language-C++"><code class="language-C++">WORD   e_magic;                     // 魔数 EXE标志（MZ）
+LONG   e_lfanew;                    // PE头相对于文件的偏移位置
+</code></pre>
 <p>通过<code>e_magic</code>判断是否是一个标准的PE文件</p>
 <p>通过<code>e_lfanew</code>才能找到PE头在哪</p>
 <p>DOS_STUB大小不固定</p>
@@ -752,15 +749,15 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
 <p><code>e_lfanew</code>是PE头相对于文件的偏移，所以PE头的实际位置是<code>PE头 = DOS Base/File Base + Dos.e_lfanew</code></p>
 <p><code>PE文件被加载到内存时的地址就是PE文件的起始地址(DOS Base/File Base)</code></p>
 <h3 id="NT头（或称为PE头）"><a href="#NT头（或称为PE头）" class="headerlink" title="NT头（或称为PE头）"></a>NT头（或称为PE头）</h3><p>IMAGE_NT_HEADERS结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_NT_HEADERS {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_NT_HEADERS {
     DWORD Signature;                            //NT头标志 'PE.'50450000 
     IMAGE_FILE_HEADER FileHeader;               //标准PE头
     IMAGE_OPTIONAL_HEADER32 OptionalHeader;     //扩展PE头
-} IMAGE_NT_HEADERS32, *PIMAGE_NT_HEADERS32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_NT_HEADERS32, *PIMAGE_NT_HEADERS32;
+</code></pre>
 <h4 id="标准PE头"><a href="#标准PE头" class="headerlink" title="标准PE头"></a>标准PE头</h4><p>IMAGE_FILE_HEADER结构</p>
 <p>正常情况下<code>32位的PE叫PE32</code>，<code>64位叫PE32+</code></p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_FILE_HEADER {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_FILE_HEADER {
     WORD    Machine;                            //魔数 x86:值为0x14c x64:值为0x8864
     WORD    NumberOfSections;                   //PE中区段的数量
     DWORD   TimeDateStamp;                      //文件创建的日期和时间
@@ -768,10 +765,10 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
     DWORD   NumberOfSymbols;                    //符号表中的符号数量
     WORD    SizeOfOptionalHeader;               //拓展头的长度 x86:224 x64:240
     WORD    Characteristics;                    //文件属性 x86:3 x64:22
-} IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_FILE_HEADER, *PIMAGE_FILE_HEADER;
+</code></pre>
 <h4 id="扩展PE头"><a href="#扩展PE头" class="headerlink" title="扩展PE头"></a>扩展PE头</h4><p>IMAGE_OPTIONAL_HEADER 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_OPTIONAL_HEADER {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_OPTIONAL_HEADER {
     //
     // Standard fields.
     //
@@ -812,11 +809,11 @@ LONG   e_lfanew;                    // PE头相对于文件的偏移位置<span 
     DWORD   LoaderFlags;                        //加载标记
     DWORD   NumberOfRvaAndSizes;                //数据目录结构的数量
     IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES]; //数据目录表数据
-} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_OPTIONAL_HEADER32, *PIMAGE_OPTIONAL_HEADER32;
+</code></pre>
 <p><code>ImageBase</code>程序建议的加载地址(基地址)，后期的版本中，为了缓解漏洞，加上了一个随机基址的功能，随机基址会把高位进行随机加载，包括主模块exe和其他模块的DLL，它们的加载基址高位堆都是随机的。随机基址加载的地址算出来再加上偏移才能得到现在的函数在哪</p>
 <h2 id="0x02-区段表"><a href="#0x02-区段表" class="headerlink" title="0x02 区段表"></a>0x02 区段表</h2><p>IMAGE_SECTION_HEADER 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#define IMAGE_SIZEOF_SHORT_NAME              8
+<pre class=" language-C++"><code class="language-C++">#define IMAGE_SIZEOF_SHORT_NAME              8
 
 typedef struct _IMAGE_SECTION_HEADER {
     BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];
@@ -832,19 +829,19 @@ typedef struct _IMAGE_SECTION_HEADER {
     WORD    NumberOfRelocations;
     WORD    NumberOfLinenumbers;
     DWORD   Characteristics;                    //标记
-} IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;
+</code></pre>
 <p>可以通过<code>IMAGE_FIRST_SECTION</code>宏来获取第一个区段</p>
 <p><code>pNt</code> 是一个指向NT头（PE头）的指针，通过<code>PIMAGE_FIRST_SECTION(pNt)</code>可以获取到第一个区段的<code>IMAGE_SECTION_HEADER</code>地址。例如<code>PIMAGE_SECTION_HEADER pSectionHeader = IMAGE_FIRST_SECTION(pNt);</code></p>
 <p><code>PIMAGE_SECTION_HEADER</code> 区段结构，<code>#define IMAGE_SIZEOF_SHORT_NAME              8</code> 长度最高是8，如果要打印区段名可以设置为9，内存全部刷为0，无论区段名长度是多少，最后都有0结尾也能形成字符串</p>
 <h2 id="0x03-数据目录表"><a href="#0x03-数据目录表" class="headerlink" title="0x03 数据目录表"></a>0x03 数据目录表</h2><p>IMAGE_DATA_DIRECTORY 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_DATA_DIRECTORY {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_DATA_DIRECTORY {
     DWORD   VirtualAddress;                     //数据的起始RVA
     DWORD   Size;                               //数据块的长度
-} IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;
+</code></pre>
 <h3 id="导入表"><a href="#导入表" class="headerlink" title="导入表"></a>导入表</h3><p>PIMAGE_IMPORT_DESCRIPTOR 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_IMPORT_DESCRIPTOR {
     union {
         DWORD   Characteristics;
         DWORD   OriginalFirstThunk;       //指向IAT (PIMAGE_THUNK_DATA)结构的指针
@@ -854,12 +851,12 @@ typedef struct _IMAGE_SECTION_HEADER {
     DWORD   Name;                         //当前导入表的名称，
     DWORD   FirstThunk;                   //与OriginalFirstThunk一样，OriginalFirstThunk不生效时它才生效
 } IMAGE_IMPORT_DESCRIPTOR;
-typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;
+</code></pre>
 <p><strong>Name 是一个 DWORD 类型的原因</strong></p>
 <p>因为Name是一个RVA，把它转为FOA，在FOA里找到一个以00结尾的ASCII字符串。</p>
 <h4 id="导入地址表（Import-address-table）"><a href="#导入地址表（Import-address-table）" class="headerlink" title="导入地址表（Import address table）"></a>导入地址表（Import address table）</h4><p>IMAGE_THUNK_DATA32 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_THUNK_DATA32 {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_THUNK_DATA32 {
     union {
         DWORD ForwarderString;      //转发
         DWORD Function;             //函数地址
@@ -867,16 +864,16 @@ typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;<span aria-h
         DWORD AddressOfData;        //RVA 指向 PIMAGE_IMPORT_BY_NAME 结构
     } u1;
 } IMAGE_THUNK_DATA32;
-typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;
+</code></pre>
 <h5 id="导入函数信息"><a href="#导入函数信息" class="headerlink" title="导入函数信息"></a>导入函数信息</h5><p>IMAGE_IMPORT_BY_NAME 结构</p>
-<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">typedef struct _IMAGE_IMPORT_BY_NAME {
+<pre class=" language-c++"><code class="language-c++">typedef struct _IMAGE_IMPORT_BY_NAME {
     WORD    Hint;                   //
     CHAR   Name[1];
-} IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;
+</code></pre>
 <h3 id="导出表"><a href="#导出表" class="headerlink" title="导出表"></a>导出表</h3><p>IMAGE_EXPORT_DIRECTORY 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_EXPORT_DIRECTORY {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_EXPORT_DIRECTORY {
     DWORD   Characteristics;         //标志 未使用
     DWORD   TimeDateStamp;           //时间戳
     WORD    MajorVersion;            //未使用
@@ -888,8 +885,8 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
     DWORD   AddressOfFunctions;      //导出函数的地址表的RVA
     DWORD   AddressOfNames;          //导出函数的名称表的RVA
     DWORD   AddressOfNameOrdinals;   //导出函数的序号表的RVA
-} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;
+</code></pre>
 <h3 id="资源表"><a href="#资源表" class="headerlink" title="资源表"></a>资源表</h3><p><strong>资源目录分三级管理</strong></p>
 <ol>
 <li><p>根目录</p>
@@ -919,7 +916,7 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
 </ol>
 <p>资源表</p>
 <p>IMAGE_RESOURCE_DIRECTORY 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DIRECTORY {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DIRECTORY {
     DWORD   Characteristics;              //特性 一般是0
     DWORD   TimeDateStamp;                //时间戳
     WORD    MajorVersion;                 //资源的主版本
@@ -927,10 +924,10 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
     WORD    NumberOfNamedEntries;         //以字符串命名的资源数量（名称条目）
     WORD    NumberOfIdEntries;            //以ID命名的资源数量（ID条目）
 //  IMAGE_RESOURCE_DIRECTORY_ENTRY DirectoryEntries[];
-} IMAGE_RESOURCE_DIRECTORY, *PIMAGE_RESOURCE_DIRECTORY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_RESOURCE_DIRECTORY, *PIMAGE_RESOURCE_DIRECTORY;
+</code></pre>
 <h4 id="根目录与选择目录（同一个结构）"><a href="#根目录与选择目录（同一个结构）" class="headerlink" title="根目录与选择目录（同一个结构）"></a>根目录与选择目录（同一个结构）</h4><p>IMAGE_RESOURCE_DIRECTORY_ENTRY 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DIRECTORY_ENTRY {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DIRECTORY_ENTRY {
     union {
         struct {
             DWORD NameOffset:31;                     //如果NameIsString是1，表示NameOffset全部指向Unicode字符串的指针偏移
@@ -946,27 +943,27 @@ typedef IMAGE_THUNK_DATA32 * PIMAGE_THUNK_DATA32;<span aria-hidden="true" class=
             DWORD   DataIsDirectory:1;               //是RVA，如果DataIsDirectory是1，那么OffsetToDirectory将会指向一组新的根目录（资源层级结构）
         } DUMMYSTRUCTNAME2;
     } DUMMYUNIONNAME2;
-} IMAGE_RESOURCE_DIRECTORY_ENTRY, *PIMAGE_RESOURCE_DIRECTORY_ENTRY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_RESOURCE_DIRECTORY_ENTRY, *PIMAGE_RESOURCE_DIRECTORY_ENTRY;
+</code></pre>
 <h4 id="具体资源结构"><a href="#具体资源结构" class="headerlink" title="具体资源结构"></a>具体资源结构</h4><p>IMAGE_RESOURCE_DATA_ENTRY  结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DATA_ENTRY {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_RESOURCE_DATA_ENTRY {
     DWORD   OffsetToData;                //RVA
     DWORD   Size;                        //大小、尺寸
     DWORD   CodePage;                    //代码页
     DWORD   Reserved;                    //保留
-} IMAGE_RESOURCE_DATA_ENTRY, *PIMAGE_RESOURCE_DATA_ENTRY;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_RESOURCE_DATA_ENTRY, *PIMAGE_RESOURCE_DATA_ENTRY;
+</code></pre>
 <h3 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h3><p>PIMAGE_BASE_RELOCATION 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_BASE_RELOCATION {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_BASE_RELOCATION {
     DWORD   VirtualAddress;              //RVA
     DWORD   SizeOfBlock;                 //重定位块的大小
 //  WORD    TypeOffset[1];               //16位，前4位是type，后12位是offset偏移
 } IMAGE_BASE_RELOCATION;
-typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;
+</code></pre>
 <h3 id="TLS表"><a href="#TLS表" class="headerlink" title="TLS表"></a>TLS表</h3><p>IMAGE_DIRECTORY_ENTRY_TLS 宏</p>
 <p>PIMAGE_TLS_DIRECTORY 结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_TLS_DIRECTORY32 {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_TLS_DIRECTORY32 {
     DWORD   StartAddressOfRawData;      //数据块开始
     DWORD   EndAddressOfRawData;        //数据块结束
     DWORD   AddressOfIndex;             //索引变量
@@ -982,11 +979,11 @@ typedef IMAGE_BASE_RELOCATION UNALIGNED * PIMAGE_BASE_RELOCATION;<span aria-hidd
     } DUMMYUNIONNAME;
 
 } IMAGE_TLS_DIRECTORY32;
-typedef IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+typedef IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;
+</code></pre>
 <h3 id="延迟导入表"><a href="#延迟导入表" class="headerlink" title="延迟导入表"></a>延迟导入表</h3><p>IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT 宏</p>
 <p>_IMAGE_DELAYLOAD_DESCRIPTOR结构</p>
-<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef struct _IMAGE_DELAYLOAD_DESCRIPTOR {
+<pre class=" language-C++"><code class="language-C++">typedef struct _IMAGE_DELAYLOAD_DESCRIPTOR {
     union {
         DWORD AllAttributes;
         struct {
@@ -1002,8 +999,8 @@ typedef IMAGE_TLS_DIRECTORY32 * PIMAGE_TLS_DIRECTORY32;<span aria-hidden="true" 
     DWORD BoundImportAddressTableRVA;       // RVA to an optional bound IAT
     DWORD UnloadInformationTableRVA;        //延迟导入函数卸载表的RVA
     DWORD TimeDateStamp;
-} IMAGE_DELAYLOAD_DESCRIPTOR, *PIMAGE_DELAYLOAD_DESCRIPTOR;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+} IMAGE_DELAYLOAD_DESCRIPTOR, *PIMAGE_DELAYLOAD_DESCRIPTOR;
+</code></pre>
 
                 
             </div>
@@ -1753,7 +1750,7 @@ $(function () {
     
 	
 	
-	<script src="/js/click_show_text.js"></script>
+	<script src="/js/click_show_text.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 

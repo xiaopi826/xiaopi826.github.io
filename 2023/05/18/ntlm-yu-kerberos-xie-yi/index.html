@@ -3,7 +3,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <meta name="keywords" content="NTLM与Kerberos协议, 小皮">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,14 +31,14 @@
 
 <meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="小皮" type="application/atom+xml">
-</head>
+<link rel="alternate" href="/atom.xml" title="小皮" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 
 
 <body>
-    <header class="navbar-fixed">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="navbar-fixed">
     <nav id="headNav" class="bg-color nav-transparent">
         <div id="navContainer" class="nav-wrapper container">
             <div class="brand-logo">
@@ -671,9 +671,6 @@
         <hr class="clearfix">
 
         
-        <!-- 是否加载使用自带的 prismjs. -->
-        <link rel="stylesheet" href="/libs/prism/prism.css">
-        
 
         
 
@@ -682,30 +679,28 @@
                 <h2 id="一、NTLM协议"><a href="#一、NTLM协议" class="headerlink" title="一、NTLM协议"></a>一、NTLM协议</h2><p>NTLM（NewTechnology LAN Manager）协议是微软用于windows身份验证的主要协议之一。NTLM协议可用于工作组中的机器验证，又可用于域环境身份验证，还可为SMB、HTTP、LDAP、SMTP等上层微软应用提供身份验证。</p>
 <h3 id="0x01-NTLM-Hash加密流程"><a href="#0x01-NTLM-Hash加密流程" class="headerlink" title="0x01 NTLM Hash加密流程"></a>0x01 NTLM Hash加密流程</h3><p>以760170为例</p>
 <p>1）将用户密码转换为十六进制格式</p>
-<pre class="line-numbers language-none"><code class="language-none">760170 -&gt; 转为十六进制 = 373630313730<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<pre><code>760170 -&gt; 转为十六进制 = 373630313730
+</code></pre>
 <p>2）将ASCII码的十六进制，即在每个字节之后添加0x00</p>
-<pre class="line-numbers language-none"><code class="language-none">373630313730 -&gt; 转为Unicode编码 = 370036003000310037003000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<pre><code>373630313730 -&gt; 转为Unicode编码 = 370036003000310037003000
+</code></pre>
 <p>3）对Unicode编码的十六进制字符串进行MD4单向Hash加密。</p>
-<pre class="line-numbers language-none"><code class="language-none">370036003000310037003000 -&gt; MD4加密 c908eb113f657fd0a03f386cadc14ceb<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-
-
+<pre><code>370036003000310037003000 -&gt; MD4加密 c908eb113f657fd0a03f386cadc14ceb
+</code></pre>
 <h3 id="0x02-NTLM-Hash本地认证流程"><a href="#0x02-NTLM-Hash本地认证流程" class="headerlink" title="0x02 NTLM Hash本地认证流程"></a>0x02 NTLM Hash本地认证流程</h3><p>用户密码经过NTLM Hash加密后存储在C:\Windows\System32\config\SAM 文件中</p>
 <p>在本地登录Windows的情况下，操作系统会使用用户输入的密码转为NTLM Hash后，去与SAM文件中的NTLM Hash密码进行比较。</p>
 <p>大致流程为：</p>
-<pre class="line-numbers language-none"><code class="language-none">winlogon.exe -&gt; 接收用户输入 -&gt; lsass.exe -&gt; 转为Hash对比SAM文件<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<pre><code>winlogon.exe -&gt; 接收用户输入 -&gt; lsass.exe -&gt; 转为Hash对比SAM文件
+</code></pre>
 <p>当用户注销、重启、锁屏后，操作系统会让 winlogon.exe 显示登录页面，当 winlogon.exe 接收用户输入后，将密码交给 lsass.exe 进程，lsass.exe进程中会存一份明文密码，将明文密码加密成 NTLM Hash 后与 SAM 文件进行比较认证。mimikatz 就是从lsass.exe 进程中抓取明文密码或者 Hash 密码。</p>
 <p>mimikatz读取用户密码</p>
 <p>提升权限</p>
-<pre class="line-numbers language-none"><code class="language-none">privilege::debug<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<pre><code>privilege::debug
+</code></pre>
 <p><img src="/./../images/NTLM%E4%B8%8EKerberos%E5%8D%8F%E8%AE%AE%E5%9B%BE%E7%89%87/Snipaste_2023-05-18_17-18-59.png" alt="Snipaste_2023-05-18_17-18-59"></p>
 <p>读取密码</p>
-<pre class="line-numbers language-none"><code class="language-none">sekurlsa::logonPasswords<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<pre><code>sekurlsa::logonPasswords
+</code></pre>
 <p><img src="/./../images/NTLM%E4%B8%8EKerberos%E5%8D%8F%E8%AE%AE%E5%9B%BE%E7%89%87/Snipaste_2023-05-18_17-19-32.png" alt="Snipaste_2023-05-18_17-19-32"></p>
 <h3 id="0x03-NTLM-Hash协议认证"><a href="#0x03-NTLM-Hash协议认证" class="headerlink" title="0x03 NTLM Hash协议认证"></a>0x03 NTLM Hash协议认证</h3><p>NTLM协议是一种基于 Challenge/Response（质询/响应）的验证机制，由三种类型消息组成：</p>
 <p>Type1（协商，Negotiate）</p>
@@ -729,15 +724,13 @@
 <p>6）服务器端根据域控返回结果，对客户端进行回复。</p>
 <h4 id="3）NTLM-v2协议"><a href="#3）NTLM-v2协议" class="headerlink" title="3）NTLM v2协议"></a>3）NTLM v2协议</h4><p>NTLM v1 和 NTLM v2 最显著的区别就是 Challenge 值与加密算法不同，共同点是都使用 NTLM Hash 进行加密。</p>
 <p>Challenge 值：</p>
-<pre class="line-numbers language-none"><code class="language-none">NTLM v1：8位
-NTLM v2：16位<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
+<pre><code>NTLM v1：8位
+NTLM v2：16位
+</code></pre>
 <p>Net-NTLM Hash 使用的加密算法：</p>
-<pre class="line-numbers language-none"><code class="language-none">NTLM v1：DES加密算法
-NTLM v2：HMAC-MD5 加密算法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-
-
+<pre><code>NTLM v1：DES加密算法
+NTLM v2：HMAC-MD5 加密算法
+</code></pre>
 <h2 id="二、Kerberos协议"><a href="#二、Kerberos协议" class="headerlink" title="二、Kerberos协议"></a>二、Kerberos协议</h2><p>Kerberos协议是一种网络身份验证协议，它旨在使用密钥加密技术为客户端/服务端应用程序提供强身份验证，需要三方共同参与才能完成一次认证。kerberos是域环境下的主要身份认证机制。</p>
 <h3 id="0x01-Kerberos认证结构"><a href="#0x01-Kerberos认证结构" class="headerlink" title="0x01 Kerberos认证结构"></a>0x01 Kerberos认证结构</h3><p>Kerberos认证所需的三个角色</p>
 <ol>
@@ -1495,7 +1488,7 @@ $(function () {
     
 	
 	
-	<script src="/js/click_show_text.js"></script>
+	<script src="/js/click_show_text.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 
