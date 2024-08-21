@@ -4,7 +4,7 @@
 
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
-    <meta name="keywords" content="test, 小皮">
+    <meta name="keywords" content="shellcode, 小皮">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>test | 小皮</title>
+    <title>shellcode | 小皮</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -443,12 +443,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">test</h1>
+                    <h1 class="description center-align post-title">shellcode</h1>
                 </div>
             </div>
         </div>
@@ -566,8 +566,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/test1/">
-                                <span class="chip bg-color">test1</span>
+                            <a href="/tags/shellcode/">
+                                <span class="chip bg-color">shellcode</span>
                             </a>
                         
                     </div>
@@ -578,8 +578,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/test111/" class="post-category">
-                                test111
+                            <a href="/categories/shellcode/" class="post-category">
+                                shellcode
                             </a>
                         
                     </div>
@@ -591,28 +591,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-09-25
+                    2024-07-08
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-09-26
+                    2024-07-12
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    543
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -632,7 +632,38 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="0x00-shellcode-的概念"><a href="#0x00-shellcode-的概念" class="headerlink" title="0x00 shellcode 的概念"></a>0x00 shellcode 的概念</h2><p>shellcode本质上就是一段16进制数据，由汇编或C/C++开发，不依赖于任何环境即可运行的一段代码。用于漏洞触发后进行的代码执行。</p>
+<p>由于shellcode本身特性，所以不能调用操作系统的API接口，所以要动态获取函数地址，通过函数指针进行调用，获取 <code>LoadLibraryA</code> 和 <code>GetProcAddress</code> 就可以获取任意函数地址。这两个函数都是由 <code>Kernel32.dll</code> 导出</p>
+<h2 id="0x01-动态获取-Kerne32-dll"><a href="#0x01-动态获取-Kerne32-dll" class="headerlink" title="0x01 动态获取 Kerne32.dll"></a>0x01 动态获取 Kerne32.dll</h2><p>x86：通过 FS 寄存器获取 TEB 地址</p>
+<p>x64：通过 GS 寄存器获取 TEB 地址</p>
+<p>Kernel32.dll 获取流程 <code>FS/GS</code> —&gt; <code>TEB</code> —&gt; <code>PEB</code> —&gt; <code>_PEB_LDR_DATA</code> —&gt; <code>_LDR_DATA_TABLE_ENTRY</code></p>
+<h2 id="0x02-获取TEB地址"><a href="#0x02-获取TEB地址" class="headerlink" title="0x02 获取TEB地址"></a>0x02 获取TEB地址</h2><p>首先运行一个程序，这里是x64位</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_15-14-11.png" alt="Snipaste_2024-07-08_15-14-11"></p>
+<p>使用 <code>!process 0 0</code> 遍历当前进程的简述信息</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_15-18-20.png" alt="Snipaste_2024-07-08_15-18-20"></p>
+<p>接下来根据获取到的数据，拿到 Eprocess 结构的地址，使用这个地址输入命令 <code>.process /i ffff8503dcf10080</code> ，之后会提示输入 g ，输入 g 后重新进行中断</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_16-52-20.png" alt="Snipaste_2024-07-08_16-52-20"></p>
+<p>重新下断后输入 <code>!process</code>  指令查看当前进程上下文。这四个都是一样的，获取到的 <code>PEB</code> 都是一样的</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-38-45.png" alt="Snipaste_2024-07-08_17-38-45"></p>
+<p>使用 <code>dt</code> 指令查看 TEB 结构，获取到我们需要的 PEB 信息</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-42-11.png" alt="Snipaste_2024-07-08_17-42-11"></p>
+<p>也可以使用 <code>r</code> 指令查看寄存器，x64位通过 GS 寄存器获取 TEB 地址</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-43-11.png" alt="Snipaste_2024-07-08_17-43-11"></p>
+<h2 id="0x03-获取PEB地址"><a href="#0x03-获取PEB地址" class="headerlink" title="0x03 获取PEB地址"></a>0x03 获取PEB地址</h2><p>根据x64偏移，输入指令查询 PEB 结构，并且获取到 <code>_PEB_LDR_DATA</code> 结构的地址与偏移</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-48-21.png" alt="Snipaste_2024-07-08_17-48-21"></p>
+<h2 id="0x04-获取-PEB-LDR-DATA结构"><a href="#0x04-获取-PEB-LDR-DATA结构" class="headerlink" title="0x04 获取_PEB_LDR_DATA结构"></a>0x04 获取_PEB_LDR_DATA结构</h2><p>指令 <code>dt _PEB_LDR_DATA 地址</code> </p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-51-58.png" alt="Snipaste_2024-07-08_17-51-58"></p>
+<h2 id="0x05-获取Kernel32-dll模块地址"><a href="#0x05-获取Kernel32-dll模块地址" class="headerlink" title="0x05 获取Kernel32.dll模块地址"></a>0x05 获取Kernel32.dll模块地址</h2><p>在 <code>_PEB_LDR_DATA</code> 结构中获取到 <code>InLoadOrderModuleList</code> 这个成员，这个成员是一个 <code>_LIST_ENTRY</code> 结构，这个结构的成员如下：</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_17-55-16.png" alt="Snipaste_2024-07-08_17-55-16"></p>
+<p><code>InLoadOrderModuleList</code>这个成员的链表节点实际上是指向 <code>_LDR_DATA_TABLE_ENTRY</code> 结构的头部的，该结构成员如下：</p>
+<p> <img src="/../images/shellcode/Snipaste_2024-07-08_17-58-37.png" alt="Snipaste_2024-07-08_17-58-37"></p>
+<p>使用 <code>_PEB_LDR_DATA</code> 中的地址，解析 <code>_LDR_DATA_TABLE_ENTRY</code> 结构，找到当前进程信息</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_18-02-56.png" alt="Snipaste_2024-07-08_18-02-56"></p>
+<p>然后使用标红的地址，继续解析 <code>_LDR_DATA_TABLE_ENTRY</code> 结构，<code>InLoadOrderLinks</code> 这个成员依然是 <code>_LIST_ENTRY</code> 结构，标红的相当于结构中向下的指针 FLINK，下一个节点就是 <code>ntdll.dll</code></p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_18-07-23.png" alt="Snipaste_2024-07-08_18-07-23"></p>
+<p>继续寻找下一个，就是要找的 <code>kernel32.dll</code> 了</p>
+<p><img src="/../images/shellcode/Snipaste_2024-07-08_18-09-16.png" alt="Snipaste_2024-07-08_18-09-16"></p>
+
                 
             </div>
             <hr/>
@@ -658,7 +689,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://xiaopi826.github.io/2022/09/25/test/">http://xiaopi826.github.io/2022/09/25/test/</a>
+                    <a href="http://xiaopi826.github.io/2024/07/08/shellcode/">http://xiaopi826.github.io/2024/07/08/shellcode/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -696,8 +727,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/test1/">
-                                    <span class="chip bg-color">test1</span>
+                                <a href="/tags/shellcode/">
+                                    <span class="chip bg-color">shellcode</span>
                                 </a>
                             
                         </div>
@@ -867,17 +898,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2023/05/18/ntlm-yu-kerberos-xie-yi/">
+                <a href="/2024/07/08/shellcode/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="NTLM与Kerberos协议">
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="shellcode">
                         
-                        <span class="card-title">NTLM与Kerberos协议</span>
+                        <span class="card-title">shellcode</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -887,26 +919,27 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-05-18
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-07-08
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%86%85%E7%BD%91/" class="post-category">
-                                    内网
+                            <a href="/categories/shellcode/" class="post-category">
+                                    shellcode
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Windows%E5%8D%8F%E8%AE%AE/">
-                        <span class="chip bg-color">Windows协议</span>
+                    <a href="/tags/shellcode/">
+                        <span class="chip bg-color">shellcode</span>
                     </a>
                     
                 </div>
@@ -920,32 +953,44 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/09/24/hello-world/">
+                <a href="/2023/08/21/pe-wen-jian-jie-gou/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="PE文件结构">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">PE文件结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            <!--more-->
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-21
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            小皮
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Windows/" class="post-category">
+                                    Windows
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">PE文件结构</span>
+                    </a>
+                    
                 </div>
                 
             </div>
